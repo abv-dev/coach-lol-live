@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.1.6] — 2026-04-17
+
+### Fixed
+- Compile error v0.1.5 : `active-win-pos-rs` expose `process_path` (pas `process_name`)
+
 ## [v0.1.5] — 2026-04-17
 
 ### Added

@@ -30,10 +30,10 @@ fn is_lol_focused() -> bool {
     match active_win_pos_rs::get_active_window() {
         Ok(info) => {
             let needle = "league";
-            let process = info.process_name.to_lowercase();
+            let path = info.process_path.to_string_lossy().to_lowercase();
             let app = info.app_name.to_lowercase();
             let title = info.title.to_lowercase();
-            process.contains(needle) || app.contains(needle) || title.contains(needle)
+            path.contains(needle) || app.contains(needle) || title.contains(needle)
         }
         Err(_) => false,
     }
