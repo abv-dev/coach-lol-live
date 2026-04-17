@@ -1,5 +1,15 @@
 # Changelog
 
+## [v0.1.4] — 2026-04-17
+
+### Fixed
+- Overlay transparent : CSS scope `:not(.micro-window)` pour garantir que le gradient de fond ne contamine pas la fenêtre overlay Tauri
+- Window config : `backgroundColor: #00000000` + `focus: false` + `visibleOnAllWorkspaces: true` pour transparence native Windows
+
+### Notes d'utilisation
+- **LoL doit être en mode "Borderless" ou "Windowed"** (Settings → Video → Window Mode)
+- Le mode "Fullscreen" exclusif bloque les overlays (problème de Windows, pas de l'app)
+
 ## [v0.1.3] — 2026-04-17
 
 ### Fixed

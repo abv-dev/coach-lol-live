@@ -25,7 +25,9 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-html, body, #root {
+html:not(.micro-window),
+html:not(.micro-window) body,
+html:not(.micro-window) #root {
   height: 100%;
   width: 100%;
   font-family: var(--font);
@@ -34,7 +36,20 @@ html, body, #root {
   overflow-x: hidden;
 }
 
-body { padding: 16px; overflow-y: auto; min-height: 100vh; }
+html.micro-window,
+html.micro-window body,
+html.micro-window #root {
+  height: 100%;
+  width: 100%;
+  font-family: var(--font);
+  color: #000;
+  background: transparent !important;
+  background-color: transparent !important;
+  overflow: hidden;
+}
+
+html:not(.micro-window) body { padding: 16px; overflow-y: auto; min-height: 100vh; }
+html.micro-window body { padding: 4px !important; overflow: hidden !important; min-height: 0 !important; }
 
 .app { display: flex; flex-direction: column; gap: 14px; }
 .app-dashboard { max-width: 1180px; margin: 0 auto; }
