@@ -495,7 +495,53 @@ body { padding: 16px; overflow-y: auto; min-height: 100vh; }
 .lf-time { font-family: var(--mono); color: var(--muted-2); font-variant-numeric: tabular-nums; }
 .lf-text { color: var(--text); }
 
-/* ---------- MICRO OVERLAY ---------- */
+/* ---------- MICRO WINDOW (Tauri overlay transparent) ---------- */
+html.micro-window,
+html.micro-window body,
+html.micro-window #root {
+  background: transparent !important;
+  padding: 0 !important;
+}
+html.micro-window body { padding: 4px !important; }
+
+.micro-window .app-micro { max-width: none; }
+
+.micro-window .micro {
+  background: transparent;
+  border: none;
+  color: #000;
+  text-shadow:
+    -1px -1px 0 #fff,
+     1px -1px 0 #fff,
+    -1px  1px 0 #fff,
+     1px  1px 0 #fff,
+     0    0   3px #fff;
+  font-weight: 700;
+}
+.micro-window .micro-top,
+.micro-window .micro-big-gold,
+.micro-window .micro-obj,
+.micro-window .micro-alert {
+  background: transparent;
+  border-color: transparent;
+}
+.micro-window .micro-top       { border-bottom-color: rgba(0,0,0,0.25); }
+.micro-window .micro-time,
+.micro-window .micro-gold,
+.micro-window .micro-hp.ok,
+.micro-window .micro-hp.med,
+.micro-window .micro-big-label,
+.micro-window .micro-big-val,
+.micro-window .micro-obj-name,
+.micro-window .micro-obj-time,
+.micro-window .micro-alert      { color: #000; }
+.micro-window .micro-hp.low     { color: #8b0000; }
+.micro-window .micro-big-gold.pos .micro-big-val { color: #065f46; }
+.micro-window .micro-big-gold.neg .micro-big-val { color: #8b0000; }
+.micro-window .micro-obj.urgent .micro-obj-time  { color: #92400e; }
+.micro-window .micro-alert-critical              { color: #8b0000; font-weight: 800; }
+
+/* ---------- MICRO OVERLAY (mode web preview, gardé) ---------- */
 .micro {
   background: rgba(10, 13, 18, 0.92);
   border: 1px solid var(--line-2);

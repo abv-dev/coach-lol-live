@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.1.2] — 2026-04-17
+
+### Fixed
+- Overlay in-game : **vraiment transparent** maintenant (le fond HTML couvrait la transparence Tauri)
+- Overlay in-game : **texte noir** avec halo blanc pour rester lisible sur les fonds sombres de LoL
+
 ## [v0.1.1] — 2026-04-17
 
 ### Added
