@@ -57,7 +57,9 @@ jobs:
           $msi = Get-ChildItem -Path "src-tauri/target/release/bundle/msi/*.msi" | Select-Object -First 1
           $sigPath = "$($msi.FullName).sig"
           $signature = Get-Content -Path $sigPath -Raw
-          $url = "https://github.com/${{ github.repository }}/releases/download/v$version/$($msi.Name)"
+          # GitHub remplace les espaces par des points dans les noms d'assets
+          $assetName = $msi.Name -replace ' ', '.'
+          $url = "https://github.com/${{ github.repository }}/releases/download/v$version/$assetName"
 
           $manifest = @{
             version = $version

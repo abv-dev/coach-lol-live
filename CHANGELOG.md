@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.1.3] — 2026-04-17
+
+### Fixed
+- **Updater auto** : 404 au download. Le `latest.json` pointait vers un `.msi` avec espaces dans le nom alors que GitHub remplace les espaces par des points dans les assets.
+
 ## [v0.1.2] — 2026-04-17
 
 ### Fixed
