@@ -5,11 +5,14 @@ const BARON_RESPAWN = 6 * 60;
 const HERALD_SPAWN = 14 * 60;
 const BARON_FIRST_SPAWN = 20 * 60;
 const DRAGON_FIRST_SPAWN = 5 * 60;
+const GRUBS_FIRST_SPAWN = 6 * 60;
+const GRUBS_DISAPPEAR_AT = 14 * 60;
 
 export interface ObjectiveTimers {
   nextDragonIn: number;
   nextBaronIn: number;
   nextHeraldIn: number | null;
+  nextGrubsIn: number | null;
   primary: { name: string; inSeconds: number };
 }
 
@@ -38,15 +41,21 @@ export function computeObjectives(data: AllGameData): ObjectiveTimers {
     ? null
     : Math.max(0, HERALD_SPAWN - now);
 
+  // Grubs : spawn à 6:00, disparaissent à 14:00 (remplacés par Herald)
+  const nextGrubsIn = now >= GRUBS_DISAPPEAR_AT
+    ? null
+    : Math.max(0, GRUBS_FIRST_SPAWN - now);
+
   const candidates: Array<{ name: string; inSeconds: number }> = [
     { name: 'Drake', inSeconds: nextDragonIn },
     { name: 'Baron', inSeconds: nextBaronIn },
   ];
   if (nextHeraldIn !== null) candidates.push({ name: 'Herald', inSeconds: nextHeraldIn });
+  if (nextGrubsIn !== null) candidates.push({ name: 'Grubs', inSeconds: nextGrubsIn });
 
   const primary = candidates.reduce((a, b) => (a.inSeconds <= b.inSeconds ? a : b));
 
-  return { nextDragonIn, nextBaronIn, nextHeraldIn, primary };
+  return { nextDragonIn, nextBaronIn, nextHeraldIn, nextGrubsIn, primary };
 }
 
 export function formatTime(seconds: number): string {

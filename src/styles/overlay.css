@@ -165,12 +165,39 @@ html.micro-window body { padding: 4px !important; overflow: hidden !important; m
 
 /* ---------- DASHBOARD ---------- */
 .dash { display: flex; flex-direction: column; gap: 14px; }
+.dash-topbar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px;
+  align-items: center;
+}
 .dash-alerts {
   padding: 10px 14px;
   background: var(--bg-2);
   border: 1px solid var(--line);
   border-radius: 10px;
 }
+
+.audio-toggle {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px;
+  background: var(--bg-2);
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font-head);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.audio-toggle:hover  { border-color: var(--gold); color: var(--gold); }
+.audio-toggle.on     { border-color: var(--pos); color: var(--pos); }
+.audio-toggle.off    { opacity: 0.6; }
+.audio-icon          { font-size: 14px; }
 .alerts { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
 .alerts-empty { color: var(--muted-2); font-size: 12px; font-style: italic; }
 .alert {
@@ -191,7 +218,7 @@ html.micro-window body { padding: 4px !important; overflow: hidden !important; m
 /* ---------- OBJECTIVE BAR ---------- */
 .obj-bar {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
 }
 .obj {

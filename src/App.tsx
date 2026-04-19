@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { AllGameData } from './types/liveClient';
 import { fetchLiveData, fetchMockData, resetMock, type ConnectionState } from './services/liveClient';
 import { checkAndApplyUpdate, type UpdateStatus } from './services/updater';
+import { checkAudioAlerts, resetAudioAlerts } from './services/audioAlerts';
 import { Dashboard } from './components/Dashboard';
 import { MicroOverlay } from './components/MicroOverlay';
 import { GameHeader } from './components/GameHeader';
@@ -42,6 +43,7 @@ export function App() {
 
   useEffect(() => {
     let cancelled = false;
+    resetAudioAlerts();
 
     async function tick() {
       if (cancelled) return;
@@ -49,12 +51,15 @@ export function App() {
       if (cancelled) return;
       setState(res.state);
       setData(res.data);
+      if (res.data && !locked) {
+        checkAudioAlerts(res.data);
+      }
     }
 
     tick();
     const id = setInterval(tick, POLL_INTERVAL_MS);
     return () => { cancelled = true; clearInterval(id); };
-  }, [mockMode]);
+  }, [mockMode, locked]);
 
   function toggleMock() {
     if (mockMode) resetMock();

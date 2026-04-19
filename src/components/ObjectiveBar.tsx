@@ -7,9 +7,10 @@ interface Props {
 
 export function ObjectiveBar({ timers }: Props) {
   const items: Array<{ label: string; time: number | null; emoji: string }> = [
+    { label: 'GRUBS',  time: timers.nextGrubsIn, emoji: '🐛' },
     { label: 'DRAKE',  time: timers.nextDragonIn, emoji: '🐉' },
-    { label: 'BARON',  time: timers.nextBaronIn, emoji: '🪱' },
     { label: 'HERALD', time: timers.nextHeraldIn, emoji: '👁' },
+    { label: 'BARON',  time: timers.nextBaronIn, emoji: '🪱' },
   ];
 
   return (

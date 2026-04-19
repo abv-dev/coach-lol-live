@@ -1,5 +1,18 @@
 # Changelog
 
+## [v0.2.1] — 2026-04-19
+
+### Added
+- **Rappels audio TTS** pour les 4 objectifs :
+  - **Drake**, **Baron**, **Herald**, **Grubs** (Ancestral Voidgrubs)
+  - Déclenchés **à 30s du spawn** ("Drake dans 30 secondes") et **au spawn** ("Drake disponible")
+  - Voix synthèse vocale fr-FR via Web Speech API
+- **Toggle audio** dans le dashboard (🔊/🔇) avec persistance localStorage
+- **Timer Grubs** (Ancestral Voidgrubs) ajouté : spawn 6:00, disparition 14:00
+
+### Changed
+- Barre d'objectifs : 4 colonnes maintenant (Grubs · Drake · Herald · Baron)
+
 ## [v0.2.0] — 2026-04-19
 
 ### Added
