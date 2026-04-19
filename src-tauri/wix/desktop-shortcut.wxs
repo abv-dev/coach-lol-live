@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
-    <DirectoryRef Id="DesktopFolder" />
-    <DirectoryRef Id="INSTALLDIR">
-      <Component Id="DesktopShortcutComponent" Guid="9F4A5D3E-8B2C-4E6F-A1D3-7C5E9B8A2F01">
-        <Shortcut Id="DesktopShortcut"
-                  Directory="DesktopFolder"
+    <DirectoryRef Id="DesktopFolder">
+      <Component Id="DesktopShortcut" Guid="9F4A5D3E-8B2C-4E6F-A1D3-7C5E9B8A2F01">
+        <Shortcut Id="ShortcutDesktop"
                   Name="Candor"
-                  Description="Candor — Coach LoL factuel"
-                  Target="[INSTALLDIR]candor.exe"
-                  WorkingDirectory="INSTALLDIR"
-                  Icon="ProductIcon.ico" />
-        <RemoveFolder Id="CleanUpDesktopShortcut" Directory="DesktopFolder" On="uninstall" />
+                  Description="Candor"
+                  Target="[APPLICATIONFOLDER]candor.exe"
+                  WorkingDirectory="APPLICATIONFOLDER" />
         <RegistryValue Root="HKCU"
-                       Key="Software\com.abv.coachlollive"
+                       Key="Software\Candor"
                        Name="DesktopShortcut"
                        Type="integer"
                        Value="1"
@@ -21,7 +17,7 @@
       </Component>
     </DirectoryRef>
     <ComponentGroup Id="DesktopShortcutGroup">
-      <ComponentRef Id="DesktopShortcutComponent" />
+      <ComponentRef Id="DesktopShortcut" />
     </ComponentGroup>
   </Fragment>
 </Wix>

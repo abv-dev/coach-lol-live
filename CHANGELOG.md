@@ -1,6 +1,12 @@
 # Changelog
 
-## [v0.4.1] — 2026-04-19
+## [v0.4.2] — 2026-04-19
+
+### Fixed
+- WiX fragment pour raccourci bureau corrigé (build v0.4.1 avait failé)
+- Suppression des références "OTP" / "broadcast" (trademark tiers)
+
+## [v0.4.1] — 2026-04-19 (build failed, replaced by v0.4.2)
 
 ### Added
 - **Raccourci bureau** créé automatiquement à l'install (via fragment WiX custom)
