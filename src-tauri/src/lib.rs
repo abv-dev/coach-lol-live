@@ -29,11 +29,9 @@ async fn fetch_live_game_data() -> Result<Value, String> {
 fn is_lol_focused() -> bool {
     match active_win_pos_rs::get_active_window() {
         Ok(info) => {
-            let needle = "league";
             let path = info.process_path.to_string_lossy().to_lowercase();
-            let app = info.app_name.to_lowercase();
-            let title = info.title.to_lowercase();
-            path.contains(needle) || app.contains(needle) || title.contains(needle)
+            // Match uniquement le process du jeu in-game, pas le launcher LeagueClient.exe
+            path.ends_with("league of legends.exe")
         }
         Err(_) => false,
     }

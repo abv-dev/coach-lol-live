@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.2.0] — 2026-04-19
+
+### Added
+- **Logo** design pro (dark + gold C + blue LIVE + corner accents)
+- **Flèche indicatrice** dans le scoreboard : pointe vers l'équipe qui mène en items value, colorée bleu/rouge selon team
+- **Typographie esports** : Rajdhani (corps) + Oxanium (titres) via Google Fonts
+- **Header premium** : logo + titre stylisé + tagline + bordure gradient bleu/or
+
+### Changed
+- **Overlay** : matche spécifiquement `League of Legends.exe` (in-game), plus `LeagueClient.exe` (lobby). L'overlay ne s'affiche QUE pendant une partie.
+- **Scoreboard** : gap value affichée en entier (plus de `.1k`), couleur selon team leader
+
 ## [v0.1.6] — 2026-04-17
 
 ### Fixed
