@@ -13,7 +13,7 @@ import { WaitingScreen } from './screens/WaitingScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 
 const POLL_INTERVAL_MS = 1000;
-const APP_VERSION = '0.5.2';
+const APP_VERSION = '0.5.3';
 type ViewMode = 'dashboard' | 'micro';
 type Screen = 'home' | 'waiting' | 'game' | 'settings';
 
@@ -113,15 +113,15 @@ export function App() {
 
   if (screen === 'home') {
     return (
-      <FitToViewport className="app app-screen">
+      <div className="app app-screen">
         <HomeScreen onStart={startFromHome} onDemo={launchDemo} version={APP_VERSION} />
-      </FitToViewport>
+      </div>
     );
   }
 
   if (screen === 'settings') {
     return (
-      <FitToViewport className="app app-dashboard">
+      <div className="app app-dashboard">
         <GameHeader
           gameTime={gameTime}
           state={state}
@@ -133,13 +133,13 @@ export function App() {
           settingsActive
         />
         <SettingsScreen onBack={closeSettings} version={APP_VERSION} />
-      </FitToViewport>
+      </div>
     );
   }
 
   if (screen === 'waiting') {
     return (
-      <FitToViewport className="app app-screen">
+      <div className="app app-screen">
         <GameHeader
           gameTime={0}
           state={state}
@@ -151,7 +151,7 @@ export function App() {
         />
         <UpdateBanner status={updateStatus} />
         <WaitingScreen />
-      </FitToViewport>
+      </div>
     );
   }
 

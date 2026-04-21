@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.5.3] — 2026-04-21
+
+### Fixed
+- **Scale-to-fit** limité au dashboard in-game uniquement. Les écrans home/waiting/settings retrouvent un scroll vertical naturel au lieu de shrink l'UI pour tout faire tenir (qui rendait tout minuscule).
+
 ## [v0.5.2] — 2026-04-20
 
 ### Changed
