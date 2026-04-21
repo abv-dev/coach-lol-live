@@ -13,7 +13,7 @@ import { WaitingScreen } from './screens/WaitingScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 
 const POLL_INTERVAL_MS = 1000;
-const APP_VERSION = '0.5.5';
+const APP_VERSION = '0.5.6';
 type ViewMode = 'dashboard' | 'micro';
 type Screen = 'home' | 'waiting' | 'game' | 'settings';
 
@@ -40,6 +40,14 @@ export function App() {
   useEffect(() => {
     if (!locked) checkAndApplyUpdate(setUpdateStatus);
   }, [locked]);
+
+  useEffect(() => {
+    if (locked) return;
+    if (!isTauriApp()) return;
+    import('@tauri-apps/api/core').then(({ invoke }) => {
+      invoke('set_overlay_visible', { visible: !!data }).catch(() => {});
+    });
+  }, [data, locked]);
 
   useEffect(() => {
     if (screen === 'home' || screen === 'settings') return;

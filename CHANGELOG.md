@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.5.6] — 2026-04-21
+
+### Fixed
+- **Overlay in-game refonte** : l'overlay micro restait caché car il était lié à une détection `active_win_pos_rs` du process "League of Legends.exe" focus, fragile et souvent en échec selon le mode d'affichage. Maintenant la visibilité est pilotée par la main window : tant que les données Live Client arrivent (= partie en cours), l'overlay est affiché + always-on-top. Marche en windowed et fullscreen borderless. Note : fullscreen exclusif bloque les overlays au niveau Windows — jouer en borderless pour les voir.
+- Dép `active-win-pos-rs` retirée (plus utilisée).
+
 ## [v0.5.5] — 2026-04-21
 
 ### Fixed
