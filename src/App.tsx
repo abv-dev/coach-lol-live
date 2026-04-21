@@ -13,7 +13,7 @@ import { WaitingScreen } from './screens/WaitingScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 
 const POLL_INTERVAL_MS = 1000;
-const APP_VERSION = '0.5.3';
+const APP_VERSION = '0.5.4';
 type ViewMode = 'dashboard' | 'micro';
 type Screen = 'home' | 'waiting' | 'game' | 'settings';
 

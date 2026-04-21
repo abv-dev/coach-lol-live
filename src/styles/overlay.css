@@ -52,7 +52,7 @@ html.micro-window #root {
   overflow: hidden;
 }
 
-html:not(.micro-window) body { padding: 16px; overflow-y: auto; min-height: 100vh; }
+html:not(.micro-window) body { padding: 16px; overflow: hidden; height: 100vh; }
 html.micro-window body { padding: 4px !important; overflow: hidden !important; min-height: 0 !important; }
 
 .app { display: flex; flex-direction: column; gap: 14px; }

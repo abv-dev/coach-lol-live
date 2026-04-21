@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.5.4] — 2026-04-21
+
+### Changed
+- **Scrolling désactivé** sur la fenêtre principale (`overflow: hidden` sur body). Plus de scrollbar verticale sur aucun écran.
+
 ## [v0.5.3] — 2026-04-21
 
 ### Fixed
