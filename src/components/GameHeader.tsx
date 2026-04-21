@@ -6,7 +6,7 @@ interface Props {
   gameTime: number;
   state: ConnectionState;
   mockMode: boolean;
-  onToggleMock: () => void;
+  onQuitDemo?: () => void;
   view: 'dashboard' | 'micro';
   onToggleView: () => void;
   onOpenSettings?: () => void;
@@ -24,7 +24,7 @@ export function GameHeader({
   gameTime,
   state,
   mockMode,
-  onToggleMock,
+  onQuitDemo,
   view,
   onToggleView,
   onOpenSettings,
@@ -52,9 +52,11 @@ export function GameHeader({
         <button className={`gh-btn ${view === 'dashboard' ? 'active' : ''}`} onClick={onToggleView}>
           {view === 'dashboard' ? '→ ' + t('nav.micro').toUpperCase() : '→ ' + t('nav.dashboard').toUpperCase()}
         </button>
-        <button className="gh-btn" onClick={onToggleMock}>
-          {mockMode ? 'LIVE' : 'MOCK'}
-        </button>
+        {mockMode && onQuitDemo && (
+          <button className="gh-btn gh-btn-quit-demo" onClick={onQuitDemo} title={t('home.quit_demo')}>
+            ← {t('home.quit_demo').toUpperCase()}
+          </button>
+        )}
         {onOpenSettings && (
           <button
             className={`gh-btn gh-btn-icon ${settingsActive ? 'active' : ''}`}

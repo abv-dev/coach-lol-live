@@ -13,7 +13,7 @@ import { WaitingScreen } from './screens/WaitingScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 
 const POLL_INTERVAL_MS = 1000;
-const APP_VERSION = '0.5.1';
+const APP_VERSION = '0.5.2';
 type ViewMode = 'dashboard' | 'micro';
 type Screen = 'home' | 'waiting' | 'game' | 'settings';
 
@@ -42,13 +42,6 @@ export function App() {
   }, [locked]);
 
   useEffect(() => {
-    if (screen === 'home') {
-      const id = setTimeout(() => setScreen(data ? 'game' : 'waiting'), 1800);
-      return () => clearTimeout(id);
-    }
-  }, [screen, data]);
-
-  useEffect(() => {
     if (screen === 'home' || screen === 'settings') return;
     const next: Screen = data ? 'game' : 'waiting';
     if (screen !== next) setScreen(next);
@@ -72,9 +65,23 @@ export function App() {
     return () => { cancelled = true; clearInterval(id); };
   }, [mockMode, locked]);
 
-  function toggleMock() {
-    if (mockMode) resetMock();
-    setMockMode((v) => !v);
+  function startFromHome() {
+    if (mockMode) {
+      resetMock();
+      setMockMode(false);
+    }
+    setScreen(data ? 'game' : 'waiting');
+  }
+
+  function launchDemo() {
+    if (!mockMode) setMockMode(true);
+    setScreen('game');
+  }
+
+  function quitDemo() {
+    resetMock();
+    setMockMode(false);
+    setScreen('home');
   }
 
   function toggleView() {
@@ -107,7 +114,7 @@ export function App() {
   if (screen === 'home') {
     return (
       <FitToViewport className="app app-screen">
-        <HomeScreen onDone={() => setScreen(data ? 'game' : 'waiting')} version={APP_VERSION} />
+        <HomeScreen onStart={startFromHome} onDemo={launchDemo} version={APP_VERSION} />
       </FitToViewport>
     );
   }
@@ -119,18 +126,13 @@ export function App() {
           gameTime={gameTime}
           state={state}
           mockMode={mockMode}
-          onToggleMock={toggleMock}
+          onQuitDemo={mockMode ? quitDemo : undefined}
           view={view}
           onToggleView={toggleView}
           onOpenSettings={closeSettings}
           settingsActive
         />
-        <SettingsScreen
-          onBack={closeSettings}
-          mockMode={mockMode}
-          onToggleMock={toggleMock}
-          version={APP_VERSION}
-        />
+        <SettingsScreen onBack={closeSettings} version={APP_VERSION} />
       </FitToViewport>
     );
   }
@@ -142,13 +144,13 @@ export function App() {
           gameTime={0}
           state={state}
           mockMode={mockMode}
-          onToggleMock={toggleMock}
+          onQuitDemo={mockMode ? quitDemo : undefined}
           view={view}
           onToggleView={toggleView}
           onOpenSettings={openSettings}
         />
         <UpdateBanner status={updateStatus} />
-        <WaitingScreen mockMode={mockMode} onToggleMock={toggleMock} />
+        <WaitingScreen />
       </FitToViewport>
     );
   }
@@ -161,7 +163,7 @@ export function App() {
           gameTime={gameTime}
           state={state}
           mockMode={mockMode}
-          onToggleMock={toggleMock}
+          onQuitDemo={mockMode ? quitDemo : undefined}
           view={view}
           onToggleView={toggleView}
           onOpenSettings={openSettings}
@@ -177,7 +179,7 @@ export function App() {
         gameTime={gameTime}
         state={state}
         mockMode={mockMode}
-        onToggleMock={toggleMock}
+        onQuitDemo={mockMode ? quitDemo : undefined}
         view={view}
         onToggleView={toggleView}
         onOpenSettings={openSettings}

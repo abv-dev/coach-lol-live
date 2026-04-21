@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.5.2] — 2026-04-20
+
+### Changed
+- **Home screen refonte** : page d'accueil persistante (plus de splash auto qui disparaît en 1.8s). 4 cards features (dashboard / overlay / audio / zéro IA), section philo, CTA "Démarrer" + "Voir la démo".
+- **Mock mode simplifié** : toggle retiré du GameHeader, WaitingScreen et Settings. Accessible uniquement via le bouton "Voir la démo" de la home. Un bouton "Quitter la démo" apparaît dans le header quand on est en mock.
+
 ## [v0.5.1] — 2026-04-20
 
 ### Added

@@ -5,8 +5,6 @@ import { testAudio } from '../services/audioAlerts';
 
 interface Props {
   onBack: () => void;
-  mockMode: boolean;
-  onToggleMock: () => void;
   version: string;
 }
 
@@ -14,7 +12,7 @@ function useAudioConfig(): AudioConfig {
   return useSyncExternalStore(subscribeAudioConfig, getAudioConfig, getAudioConfig);
 }
 
-export function SettingsScreen({ onBack, mockMode, onToggleMock, version }: Props) {
+export function SettingsScreen({ onBack, version }: Props) {
   const t = useT();
   const lang = useLang();
   const audio = useAudioConfig();
@@ -93,15 +91,6 @@ export function SettingsScreen({ onBack, mockMode, onToggleMock, version }: Prop
               </button>
             ))}
           </div>
-        </section>
-
-        <section className="settings-section">
-          <h2 className="settings-section-title">🎨 {t('settings.display.title')}</h2>
-          <Toggle
-            label={t('settings.display.mock')}
-            checked={mockMode}
-            onChange={() => onToggleMock()}
-          />
         </section>
 
         <section className="settings-section">
