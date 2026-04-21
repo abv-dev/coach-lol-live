@@ -10,9 +10,13 @@ const GRUBS_DISAPPEAR_AT = 14 * 60;
 
 export interface ObjectiveTimers {
   nextDragonIn: number;
+  nextDragonAt: number;
   nextBaronIn: number;
+  nextBaronAt: number;
   nextHeraldIn: number | null;
+  nextHeraldAt: number | null;
   nextGrubsIn: number | null;
+  nextGrubsAt: number | null;
   primary: { name: string; inSeconds: number };
 }
 
@@ -27,24 +31,22 @@ export function computeObjectives(data: AllGameData): ObjectiveTimers {
   const now = data.gameData.gameTime;
 
   const lastDragon = lastEventTime(events, 'DragonKill');
-  const nextDragonIn = lastDragon === null
-    ? Math.max(0, DRAGON_FIRST_SPAWN - now)
-    : Math.max(0, lastDragon + DRAGON_RESPAWN - now);
+  const nextDragonAt = lastDragon === null ? DRAGON_FIRST_SPAWN : lastDragon + DRAGON_RESPAWN;
+  const nextDragonIn = Math.max(0, nextDragonAt - now);
 
   const lastBaron = lastEventTime(events, 'BaronKill');
-  const nextBaronIn = lastBaron === null
-    ? Math.max(0, BARON_FIRST_SPAWN - now)
-    : Math.max(0, lastBaron + BARON_RESPAWN - now);
+  const nextBaronAt = lastBaron === null ? BARON_FIRST_SPAWN : lastBaron + BARON_RESPAWN;
+  const nextBaronIn = Math.max(0, nextBaronAt - now);
 
   const heraldKilled = lastEventTime(events, 'HeraldKill') !== null;
-  const nextHeraldIn = heraldKilled || now >= BARON_FIRST_SPAWN
-    ? null
-    : Math.max(0, HERALD_SPAWN - now);
+  const heraldGone = heraldKilled || now >= BARON_FIRST_SPAWN;
+  const nextHeraldAt = heraldGone ? null : HERALD_SPAWN;
+  const nextHeraldIn = heraldGone ? null : Math.max(0, HERALD_SPAWN - now);
 
   // Grubs : spawn à 6:00, disparaissent à 14:00 (remplacés par Herald)
-  const nextGrubsIn = now >= GRUBS_DISAPPEAR_AT
-    ? null
-    : Math.max(0, GRUBS_FIRST_SPAWN - now);
+  const grubsGone = now >= GRUBS_DISAPPEAR_AT;
+  const nextGrubsAt = grubsGone ? null : GRUBS_FIRST_SPAWN;
+  const nextGrubsIn = grubsGone ? null : Math.max(0, GRUBS_FIRST_SPAWN - now);
 
   const candidates: Array<{ name: string; inSeconds: number }> = [
     { name: 'Drake', inSeconds: nextDragonIn },
@@ -55,7 +57,13 @@ export function computeObjectives(data: AllGameData): ObjectiveTimers {
 
   const primary = candidates.reduce((a, b) => (a.inSeconds <= b.inSeconds ? a : b));
 
-  return { nextDragonIn, nextBaronIn, nextHeraldIn, nextGrubsIn, primary };
+  return {
+    nextDragonIn, nextDragonAt,
+    nextBaronIn, nextBaronAt,
+    nextHeraldIn, nextHeraldAt,
+    nextGrubsIn, nextGrubsAt,
+    primary,
+  };
 }
 
 export function formatTime(seconds: number): string {

@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.5.5] — 2026-04-21
+
+### Fixed
+- **Spam audio "Drake/Grubs disponible"** réparé : l'ID de déclenchement était reconstruit à partir de `now + nextXIn` mais `nextXIn` reste clampé à 0 tant que l'objectif est en vie → l'ID changeait à chaque tick. Maintenant on utilise `nextXAt` (heure de spawn absolue, stable entre deux kills). Une seule annonce par spawn, plus d'annonce tant que l'objectif est up — et une fois killed le timer saute au respawn.
+
+### Added
+- **Annonce de la soul** : quand une équipe kill son 4ème drake, annonce vocale "Âme [élément] pour l'équipe [couleur]" (FR/EN). Élément extrait directement du DragonType du 4ème kill, aucune invention.
+
 ## [v0.5.4] — 2026-04-21
 
 ### Changed

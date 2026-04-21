@@ -1,5 +1,6 @@
-import type { AllGameData } from '../types/liveClient';
+import type { AllGameData, Team } from '../types/liveClient';
 import { computeObjectives } from '../logic/objectiveTimer';
+import { computeDragonState } from '../logic/dragonSoul';
 import { getAudioConfig } from './audioConfig';
 import { getLang } from '../i18n';
 
@@ -10,8 +11,7 @@ type ObjKey = 'drake' | 'baron' | 'herald' | 'grubs';
 interface ObjectivePlan {
   name: string;
   key: ObjKey;
-  inSeconds: number | null;
-  now: number;
+  scheduledAt: number | null;
 }
 
 const names: Record<Lang, Record<ObjKey, string>> = {
@@ -19,16 +19,38 @@ const names: Record<Lang, Record<ObjKey, string>> = {
   en: { drake: 'Drake', baron: 'Baron', herald: 'Herald', grubs: 'Grubs' },
 };
 
+const soulTypes: Record<Lang, Record<string, string>> = {
+  fr: {
+    Infernal: 'infernale', Ocean: 'océan', Cloud: 'nuage',
+    Mountain: 'montagne', Hextech: 'hextech', Chemtech: 'chemtech',
+  },
+  en: {
+    Infernal: 'Infernal', Ocean: 'Ocean', Cloud: 'Cloud',
+    Mountain: 'Mountain', Hextech: 'Hextech', Chemtech: 'Chemtech',
+  },
+};
+
+const teamNames: Record<Lang, Record<Team, string>> = {
+  fr: { ORDER: 'bleue', CHAOS: 'rouge' },
+  en: { ORDER: 'blue', CHAOS: 'red' },
+};
+
 type Lang = 'fr' | 'en';
 
-const phrases: Record<Lang, { soon: (name: string) => string; up: (name: string) => string }> = {
+const phrases: Record<Lang, {
+  soon: (name: string) => string;
+  up: (name: string) => string;
+  soul: (type: string, team: string) => string;
+}> = {
   fr: {
     soon: (n) => `${n} dans 30 secondes`,
     up: (n) => `${n} disponible`,
+    soul: (t, team) => `Âme ${t} pour l'équipe ${team}`,
   },
   en: {
     soon: (n) => `${n} in 30 seconds`,
     up: (n) => `${n} available`,
+    soul: (t, team) => `${t} soul secured by ${team} team`,
   },
 };
 
@@ -72,31 +94,44 @@ export function checkAudioAlerts(data: AllGameData): void {
   const ph = phrases[lang];
 
   const plans: ObjectivePlan[] = [
-    { name: names[lang].drake,  key: 'drake',  inSeconds: obj.nextDragonIn, now },
-    { name: names[lang].baron,  key: 'baron',  inSeconds: obj.nextBaronIn, now },
-    { name: names[lang].herald, key: 'herald', inSeconds: obj.nextHeraldIn, now },
-    { name: names[lang].grubs,  key: 'grubs',  inSeconds: obj.nextGrubsIn, now },
+    { name: names[lang].drake,  key: 'drake',  scheduledAt: obj.nextDragonAt },
+    { name: names[lang].baron,  key: 'baron',  scheduledAt: obj.nextBaronAt },
+    { name: names[lang].herald, key: 'herald', scheduledAt: obj.nextHeraldAt },
+    { name: names[lang].grubs,  key: 'grubs',  scheduledAt: obj.nextGrubsAt },
   ];
 
   for (const p of plans) {
-    if (p.inSeconds === null || p.inSeconds < 0) continue;
+    if (p.scheduledAt === null) continue;
     if (!config[p.key]) continue;
 
-    const spawnTime = Math.round(now + p.inSeconds);
+    const remaining = p.scheduledAt - now;
 
-    if (p.inSeconds <= 30 && p.inSeconds >= 28) {
-      const id = `${p.key}-30-${spawnTime}`;
+    if (remaining > 27 && remaining <= 30) {
+      const id = `${p.key}-soon-${p.scheduledAt}`;
       if (!triggered.has(id)) {
         triggered.add(id);
         speak(ph.soon(p.name));
       }
     }
 
-    if (p.inSeconds >= 0 && p.inSeconds <= 1) {
-      const id = `${p.key}-up-${spawnTime}`;
+    if (remaining <= 1 && remaining > -3) {
+      const id = `${p.key}-up-${p.scheduledAt}`;
       if (!triggered.has(id)) {
         triggered.add(id);
         speak(ph.up(p.name));
+      }
+    }
+  }
+
+  // Dragon soul — announced once per game when a team secures 4 drakes
+  if (config.drake) {
+    const soul = computeDragonState(data);
+    if (soul.soulTeam && soul.soulType) {
+      const id = `soul-${soul.soulTeam}-${soul.soulType}`;
+      if (!triggered.has(id)) {
+        triggered.add(id);
+        const typeLabel = soulTypes[lang][soul.soulType] ?? soul.soulType;
+        speak(ph.soul(typeLabel, teamNames[lang][soul.soulTeam]));
       }
     }
   }
