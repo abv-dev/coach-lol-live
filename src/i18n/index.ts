@@ -45,6 +45,7 @@ const dictionaries: Record<Lang, Record<string, string>> = {
     'settings.language.title': 'Langue',
     'settings.about.title': 'À propos',
     'settings.about.version': 'Version',
+    'settings.about.sponsor': 'Soutenir le projet',
 
     'nav.settings': 'Paramètres',
     'nav.dashboard': 'Dashboard',
@@ -108,6 +109,7 @@ const dictionaries: Record<Lang, Record<string, string>> = {
     'settings.language.title': 'Language',
     'settings.about.title': 'About',
     'settings.about.version': 'Version',
+    'settings.about.sponsor': 'Support the project',
 
     'nav.settings': 'Settings',
     'nav.dashboard': 'Dashboard',

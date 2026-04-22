@@ -434,6 +434,8 @@ a { color: inherit; text-decoration: none; }
   color: var(--muted);
 }
 .footer-right a:hover { color: var(--gold); }
+.footer-right a.footer-sponsor { color: #ec4899; }
+.footer-right a.footer-sponsor:hover { color: #f472b6; }
 
 .footer-disclaimer {
   grid-column: 1 / -1;

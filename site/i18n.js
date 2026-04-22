@@ -55,8 +55,9 @@ const i18n = {
     'download.links.changelog': 'Changelog',
     'download.links.bugs': 'Signaler un bug',
 
-    'footer.tagline': 'Open source · MIT-like · Sans pub, sans tracking',
+    'footer.tagline': 'Open source · MIT · Sans pub, sans tracking',
     'footer.gh': 'GitHub',
+    'footer.sponsor': '♥ Soutenir',
     'footer.releases': 'Releases',
     'footer.changelog': 'Changelog',
     'footer.disclaimer': 'Candor n\'est ni affilié ni approuvé par Riot Games. League of Legends et tous les assets Riot associés sont la propriété de Riot Games, Inc.',
@@ -116,8 +117,9 @@ const i18n = {
     'download.links.changelog': 'Changelog',
     'download.links.bugs': 'Report a bug',
 
-    'footer.tagline': 'Open source · MIT-like · No ads, no tracking',
+    'footer.tagline': 'Open source · MIT · No ads, no tracking',
     'footer.gh': 'GitHub',
+    'footer.sponsor': '♥ Sponsor',
     'footer.releases': 'Releases',
     'footer.changelog': 'Changelog',
     'footer.disclaimer': 'Candor is not affiliated with or endorsed by Riot Games. League of Legends and all Riot assets are property of Riot Games, Inc.',

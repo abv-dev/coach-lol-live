@@ -14,7 +14,7 @@ import { SettingsScreen } from './screens/SettingsScreen';
 import { EndGameScreen } from './screens/EndGameScreen';
 
 const POLL_INTERVAL_MS = 1000;
-const APP_VERSION = '0.5.10';
+const APP_VERSION = '0.5.11';
 type ViewMode = 'dashboard' | 'micro';
 type Screen = 'home' | 'waiting' | 'game' | 'settings' | 'end';
 

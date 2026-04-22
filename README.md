@@ -1,177 +1,99 @@
 # Candor
 
-Dashboard + overlay factuel temps réel pour League of Legends.
+> Coach factuel temps réel pour League of Legends. Zéro IA, zéro invention, tu gardes ton cerveau.
 
-**Principe** : zéro IA, zéro interprétation. L'app lit le Live Client Data API officiel de Riot (`https://127.0.0.1:2999/liveclientdata/allgamedata`) et affiche les faits. Le joueur garde son cerveau.
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/abv-dev/candor)](https://github.com/abv-dev/candor/releases/latest)
+[![CI](https://github.com/abv-dev/candor/actions/workflows/ci.yml/badge.svg)](https://github.com/abv-dev/candor/actions)
+[![Sponsor](https://img.shields.io/badge/♥-Sponsor-ec4899?logo=github-sponsors)](https://github.com/sponsors/abv-dev)
 
-## Deux vues
+**Site** : [candorlol.vercel.app](https://candorlol.vercel.app) · **Téléchargement** Windows x64
 
-- **Dashboard** — fenêtre plein écran avec scoreboard esports 5v5, guide joueur centré sur toi, live feed events.
-- **Micro overlay** — fenêtre transparente always-on-top (~300×240) avec 5-6 infos clés, posée dans un coin de l'écran pendant que tu joues.
+## Principe
+
+Candor lit l'**API Live Client Data officielle de Riot** (port local 2999) et affiche **les faits**. Rien n'est inventé, rien n'est extrapolé par un modèle. Pas de reco de build, pas de tier list, pas de "tu devrais push". Juste les chiffres, pour que tu décides.
+
+- Items value calculée depuis `items_db.json` officiel Riot (patch 16.7.1)
+- Objectifs (Drake, Baron, Herald, Grubs) timés avec les events du Live Client
+- Comparaison par lane basée sur la position déclarée par Riot
+- Soul prédite via `mapTerrain`, pas via hypothèse
+
+## Features
+
+### Dashboard
+- Scoreboard broadcast 5v5 avec flèches gold par lane + team
+- Stacks drake (0-4) et tours détruites par team
+- PlayerGuide centré sur le joueur actif et son direct opposant (stats, HP/mana, items, next item probable, summoner spells)
+- Live feed des events récents (kills, objectifs, tours)
+- Écran fin de partie avec résumé
+
+### Overlay micro
+- Fenêtre transparente always-on-top (~300×240), always-on-top, non intrusive
+- 5-6 infos clés : temps, HP%, gold, écart items team, objectif prio, alertes critiques
+- S'affiche automatiquement dès qu'une partie Live est détectée
+- Texte noir + halo blanc haut-contraste pour lisibilité sur n'importe quel fond LoL
+
+### Audio
+- Rappels vocaux FR/EN (TTS natif) pour Drake, Baron, Herald, Grubs
+- "X dans 30 secondes" et "X disponible" à chaque spawn
+- Rappel de despawn 1 min avant (Grubs à 13:00, Herald à 19:00)
+- Prédiction de soul après 2 drakes killed
+- Annonce "L'équipe X a tué [objectif]" avec type du drake si applicable
+- Annonce de soul secured au 4ème drake d'une team
+- Toggle par objectif + volume dans les settings
+
+### Auto-update
+Signature minisign, dialog natif au lancement. Pas de réinstallation manuelle, jamais.
+
+## Installation
+
+Télécharge le `.msi` depuis [candorlol.vercel.app](https://candorlol.vercel.app) ou [Releases](https://github.com/abv-dev/candor/releases/latest). Double-clique, installe, lance. Candor tourne à côté du client League — aucune modification du client de jeu.
+
+**Windows 10/11 x64 requis.** Jouer en **fullscreen borderless** pour que l'overlay s'affiche (Windows bloque les overlays sur le fullscreen exclusif).
+
+## Dev
+
+```bash
+npm install
+npm run dev        # web-only, mode démo actif depuis la home
+```
+
+### Build Windows natif
+
+Prérequis : Rust, Visual Studio Build Tools (C++ desktop), WebView2, Node.js 20 LTS.
+
+```bash
+npm run tauri:dev   # dev avec hot-reload + LoL
+npm run tauri:build # .msi prod dans src-tauri/target/release/bundle/msi/
+```
+
+### Release
+
+Bump `package.json` + `src-tauri/tauri.conf.json` + `CHANGELOG.md`, commit, tag `vX.Y.Z`, push. GitHub Actions build le MSI Windows signé et publie la release auto.
 
 ## Stack
 
-- Frontend : React 18 + Vite + TypeScript
-- Backend natif : Tauri 2 (Rust)
-- Data : Riot Live Client Data API (port 2999) + Data Dragon CDN (images)
+- **Frontend** React 19 + Vite + TypeScript
+- **Backend** Tauri 2 (Rust) — 2 fenêtres (main + overlay transparent)
+- **Data** Live Client Data API (port 2999, pas de clé) + Data Dragon CDN
+- **Tests** Vitest, 54 tests sur la logique pure
 
-## Dev web-only (sans Tauri, depuis n'importe où)
+## Limites
 
-```bash
-npm install
-npm run dev
-```
+- Pas de CD ennemi, pas de ward tracking, pas de wave state — l'API Live Client ne fournit pas ces infos
+- Summoner's Rift uniquement (map 11)
+- Windows uniquement (Tauri supporte macOS/Linux, mais LoL non)
+- Fullscreen exclusif bloqué par Windows pour tout overlay
 
-Ouvre http://localhost:5173/. Le mode mock est activé par défaut (game simulée qui tourne, pas besoin de LoL ouvert).
+## Support
 
-## Build Windows natif (pour usage en game)
+Si Candor te rend service, tu peux contribuer :
 
-### Prérequis (une fois)
+- ⭐ [Star le repo](https://github.com/abv-dev/candor) — ça aide pour la découverte
+- 💖 [Sponsor via GitHub](https://github.com/sponsors/abv-dev) — ça finance le temps de maintenance
+- 🐛 [Signaler un bug](https://github.com/abv-dev/candor/issues)
+- 💬 Feedback sur r/leagueoflegends avec `#candor`
 
-Sur ton Windows 10 :
+## License
 
-```powershell
-# Rust
-winget install --id Rustlang.Rustup
-
-# Visual Studio Build Tools (workload "Desktop development with C++")
-winget install --id Microsoft.VisualStudio.2022.BuildTools
-
-# WebView2 (préinstallé sur Win10 récent, sinon)
-winget install --id Microsoft.EdgeWebView2Runtime
-
-# Node.js v20 LTS si pas déjà
-# https://nodejs.org/
-```
-
-Redémarre le terminal après l'install de Rust.
-
-### Clone + install
-
-```powershell
-git clone git@github.com:abv-dev/candor.git
-cd candor
-npm install
-```
-
-### Générer les icônes (placeholder → toutes tailles)
-
-```powershell
-npx tauri icon src-tauri/icons/icon.png
-```
-
-Ça crée `icon.ico`, `icon.icns`, les tailles 32/128/128@2x à partir du PNG source.
-
-### Lancer en mode dev Tauri (pendant que LoL est ouvert)
-
-```powershell
-npm run tauri:dev
-```
-
-Deux fenêtres s'ouvrent :
-1. Dashboard (fenêtre normale)
-2. Overlay transparent (coin haut-gauche, always-on-top)
-
-L'app se connecte au Live Client API via une commande Rust qui bypass le cert self-signed.
-
-### Build du .msi installable
-
-```powershell
-npm run tauri:build
-```
-
-Le `.msi` atterrit dans `src-tauri/target/release/bundle/msi/`. Double-clique pour installer — l'app apparaît dans le menu démarrer.
-
-## Mises à jour automatiques
-
-L'app **vérifie au démarrage** si une nouvelle version est dispo sur GitHub. Si oui, elle télécharge, installe et redémarre toute seule. Tu n'as jamais besoin de réinstaller manuellement.
-
-### Flow
-
-```
-dev pousse un tag          → GitHub Actions build .msi sur Windows runner
-push git tag v0.2.0          ↓
-                             signe le bundle avec la clé privée (secret GH)
-                             ↓
-                             crée GitHub Release + publie .msi + latest.json
-                             ↓
-app chez l'user détecte la new version au prochain lancement
-                             ↓
-download + install + restart (toutes les étapes automatiques)
-```
-
-### Setup (une fois, avant le premier release)
-
-**1. Secrets GitHub** — ajoute-les dans Settings → Secrets and variables → Actions :
-
-| Secret | Valeur |
-|---|---|
-| `TAURI_SIGNING_PRIVATE_KEY` | contenu de `~/.tauri/coach-lol-live.key` (signature key conservée, on n'en change pas — les updates restent signées par la même clé) (base64) |
-| `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` | vide (pas de password) |
-
-**2. Repo public** — les releases sont accessibles à l'URL `releases/latest/download/...` sans auth. Pour que l'auto-update marche sans token embarqué, **le repo doit être public**. (Le code n'a aucun secret — les clés sont dans ton home + GitHub secrets.)
-
-### Publier une nouvelle version
-
-```bash
-# Bump la version (édite src-tauri/tauri.conf.json + package.json)
-# Ex : "version": "0.1.0" → "0.2.0"
-
-git add -A
-git commit -m "Bump v0.2.0"
-git tag v0.2.0
-git push && git push --tags
-```
-
-GitHub Actions prend le relais. 5-10 min plus tard ton Windows détectera l'update au prochain démarrage de l'app.
-
-## Structure
-
-```
-src/
-  App.tsx                 # détecte ?view=micro pour l'overlay, sinon dashboard
-  main.tsx
-  components/
-    Dashboard.tsx         # vue plein écran (scoreboard + guide + events)
-    MicroOverlay.tsx      # vue compacte in-game
-    Scoreboard.tsx
-    TeamPanel.tsx
-    PlayerCard.tsx
-    PlayerGuide.tsx       # section centrée sur le joueur actif
-    GameHeader.tsx
-    ObjectiveBar.tsx
-    LiveFeed.tsx
-    AlertList.tsx
-    ChampionImage.tsx     # images Data Dragon
-    ItemImage.tsx
-  logic/
-    goldCalc.ts           # items value (somme items_db, 100% factuel)
-    itemProgress.ts       # next item via components Data Dragon
-    directOpponent.ts     # matchup direct (même position)
-    playerStats.ts        # agrégats équipe + comparaisons
-    objectiveTimer.ts     # drake/baron/herald timers
-    alertEngine.ts        # alertes factuelles (pas de verdicts)
-    eventHistory.ts       # format des events récents
-  services/
-    liveClient.ts         # Tauri invoke ou Vite proxy selon contexte
-    ddragon.ts            # URLs CDN officielles
-  mock/
-    gameState.ts          # simulateur de game pour dev sans LoL
-  data/
-    items.json            # Data Dragon items patch 16.7.1
-src-tauri/
-  Cargo.toml              # deps Rust
-  tauri.conf.json         # config 2 fenêtres (main + overlay)
-  src/lib.rs              # commande Rust fetch_live_game_data (bypass SSL)
-  capabilities/default.json
-```
-
-## Limites connues
-
-- L'app ne peut pas **savoir** ce que l'API Live Client ne dit pas : position des joueurs sur la map, cooldowns ennemis, wave state.
-- Elle ne **recommande pas** de build ou de runes (ce serait de l'invention).
-- Pour un vrai "coach" qui analyse ta game, il faudrait un LLM — rejeté pour la v1 car il hallucinait sur le projet précédent.
-
-## Licence
-
-Privée — usage personnel.
+MIT — voir [LICENSE](LICENSE). Projet indépendant, non affilié à Riot Games. League of Legends et assets associés sont propriété de Riot Games, Inc.

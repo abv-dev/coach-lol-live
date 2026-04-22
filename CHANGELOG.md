@@ -1,5 +1,14 @@
 # Changelog
 
+## [v0.5.11] — 2026-04-22
+
+### Added
+- **Licence MIT** publiée (fichier `LICENSE` à la racine).
+- **`.github/FUNDING.yml`** : bouton "Sponsor" visible sur le repo GitHub.
+- **Bouton "Soutenir le projet"** dans Settings → À propos, redirige vers GitHub Sponsors.
+- **Lien "♥ Soutenir"** dans le footer du site (candorlol.vercel.app).
+- **README refondu** : hero avec badges, features par section, install user-facing en premier, section Support avec CTA star + sponsor + issues.
+
 ## [v0.5.10] — 2026-04-22
 
 ### Fixed

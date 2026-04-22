@@ -99,6 +99,14 @@ export function SettingsScreen({ onBack, version }: Props) {
             <span>{t('settings.about.version')}</span>
             <span className="settings-about-v">v{version}</span>
           </div>
+          <a
+            href="https://github.com/sponsors/abv-dev"
+            target="_blank"
+            rel="noopener"
+            className="settings-sponsor-btn"
+          >
+            ♥ {t('settings.about.sponsor')}
+          </a>
         </section>
       </div>
     </div>
