@@ -31,9 +31,14 @@ export function Dashboard({ data }: Props) {
 
       <Scoreboard aggs={aggs} data={data} activePlayerName={data.activePlayer.summonerName} />
 
-      <PlayerGuide data={data} />
-
-      <LiveFeed events={events} />
+      <div className="dash-bottom">
+        <div className="dash-bottom-main">
+          <PlayerGuide data={data} />
+        </div>
+        <div className="dash-bottom-side">
+          <LiveFeed events={events} />
+        </div>
+      </div>
     </div>
   );
 }

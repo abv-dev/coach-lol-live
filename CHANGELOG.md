@@ -1,5 +1,12 @@
 # Changelog
 
+## [v0.5.10] — 2026-04-22
+
+### Fixed
+- **Dashboard plus horizontal** : le PlayerGuide et la LiveFeed sont maintenant côte à côte (2.2fr / 1fr) au lieu d'être empilés verticalement. Gain d'environ 250px de hauteur, moins de shrink par scale-to-fit.
+- **Largeur dashboard augmentée** : `max-width` passe de 1180px à 1440px pour mieux utiliser les écrans larges.
+- Breakpoint à 960px : retour à une colonne unique sur petits écrans.
+
 ## [v0.5.9] — 2026-04-22
 
 ### Added
