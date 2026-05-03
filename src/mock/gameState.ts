@@ -29,55 +29,114 @@ const ITEM_PRICES: Record<number, number> = {
   3117:  950, 3006: 1100, 3026: 3000,
 };
 
-export function generateMockGameState(): AllGameData {
-  const allPlayers: AllPlayer[] = LINEUP.map((champ) => ({
-    championName: champ.name,
-    rawChampionName: `game_character_displayname_${champ.name}`,
-    summonerName: champ.summoner,
-    riotId: `${champ.summoner}#EUW`,
-    team: champ.team,
-    level: 1,
-    position: champ.position,
-    isBot: false,
-    isDead: false,
-    respawnTimer: 0,
-    items: [],
-    scores: { kills: 0, deaths: 0, assists: 0, creepScore: 0, wardScore: 0 },
-    summonerSpells: {
-      summonerSpellOne: { displayName: 'Flash', rawDescription: '' },
-      summonerSpellTwo: { displayName: 'Ignite', rawDescription: '' },
-    },
-    skinID: 0,
+// Pre-baked mid-game stats so the demo (and screen recordings) show a rich
+// dashboard immediately instead of starting from 0:00.
+const SEED_KDA: Array<{ k: number; d: number; a: number; cs: number }> = [
+  { k: 3, d: 2, a: 4, cs: 120 }, // Ornn TOP
+  { k: 2, d: 1, a: 4, cs: 95 },  // LeeSin JG
+  { k: 2, d: 2, a: 3, cs: 145 }, // Ahri MID
+  { k: 2, d: 2, a: 2, cs: 150 }, // Jinx ADC
+  { k: 1, d: 2, a: 6, cs: 25 },  // Leona SUP
+  { k: 3, d: 2, a: 1, cs: 110 }, // Darius TOP
+  { k: 2, d: 2, a: 3, cs: 100 }, // Graves JG
+  { k: 2, d: 3, a: 2, cs: 130 }, // Yasuo MID
+  { k: 1, d: 1, a: 3, cs: 135 }, // Caitlyn ADC
+  { k: 1, d: 2, a: 5, cs: 20 },  // Thresh SUP
+];
+
+const SEED_TIME = 920; // 15:20 — soul predicted, baron coming, herald gone
+
+function buildSeedItems(idx: number): { itemID: number; slot: number; count: number; price: number; canUse: boolean; consumable: boolean; displayName: string }[] {
+  const champ = LINEUP[idx]!;
+  const seed = SEED_KDA[idx]!;
+  const goldEarned = 500 + seed.cs * 21 + seed.k * 300 + seed.a * 150 + SEED_TIME * 21 * 0.45;
+  const itemsTarget = Math.min(champ.itemBuild.length, Math.max(2, Math.floor(goldEarned / 3000)));
+  return champ.itemBuild.slice(0, itemsTarget).map((itemID, slot) => ({
+    itemID,
+    slot,
+    count: 1,
+    price: ITEM_PRICES[itemID] ?? 0,
+    canUse: false,
+    consumable: false,
+    displayName: `Item${itemID}`,
   }));
+}
+
+export function generateMockGameState(): AllGameData {
+  const seedLevel = Math.min(18, Math.max(1, Math.floor(SEED_TIME / 60) + 1));
+  const allPlayers: AllPlayer[] = LINEUP.map((champ, idx) => {
+    const seed = SEED_KDA[idx]!;
+    return {
+      championName: champ.name,
+      rawChampionName: `game_character_displayname_${champ.name}`,
+      summonerName: champ.summoner,
+      riotId: `${champ.summoner}#EUW`,
+      team: champ.team,
+      level: seedLevel,
+      position: champ.position,
+      isBot: false,
+      isDead: false,
+      respawnTimer: 0,
+      items: buildSeedItems(idx),
+      scores: { kills: seed.k, deaths: seed.d, assists: seed.a, creepScore: seed.cs, wardScore: 5 },
+      summonerSpells: {
+        summonerSpellOne: { displayName: 'Flash', rawDescription: '' },
+        summonerSpellTwo: { displayName: idx === 0 ? 'Teleport' : idx === 1 ? 'Smite' : idx === 4 || idx === 9 ? 'Exhaust' : 'Ignite', rawDescription: '' },
+      },
+      skinID: 0,
+    };
+  });
+
+  // Seed events covering up to SEED_TIME so timers, dragons, herald, turrets,
+  // and the soul prediction (mapTerrain) are already meaningful.
+  const seedEvents: GameEvent[] = [
+    { EventID: 0, EventName: 'GameStart',    EventTime: 0 },
+    { EventID: 1, EventName: 'FirstBlood',   EventTime: 180, KillerName: 'JgDiff' },
+    { EventID: 2, EventName: 'ChampionKill', EventTime: 180, KillerName: 'JgDiff',    VictimName: 'TopAndy',   Assisters: ['You'] },
+    { EventID: 3, EventName: 'DragonKill',   EventTime: 300, KillerName: 'JgDiff',    DragonType: 'Infernal' },
+    { EventID: 4, EventName: 'ChampionKill', EventTime: 360, KillerName: 'You',       VictimName: 'TopAndy',   Assisters: ['JgDiff'] },
+    { EventID: 5, EventName: 'TurretKilled', EventTime: 420, KillerName: 'You',       TurretKilled: 'Turret_T2_L_03_A' },
+    { EventID: 6, EventName: 'ChampionKill', EventTime: 480, KillerName: 'TopAndy',   VictimName: 'JgDiff',    Assisters: ['ItsOver'] },
+    { EventID: 7, EventName: 'HeraldKill',   EventTime: 540, KillerName: 'JgDiff' },
+    { EventID: 8, EventName: 'ChampionKill', EventTime: 660, KillerName: 'MidAndy',   VictimName: 'ItsOver',   Assisters: ['HardCarry'] },
+    { EventID: 9, EventName: 'ChampionKill', EventTime: 720, KillerName: 'PingLord',  VictimName: 'HardCarry', Assisters: ['ItsOver'] },
+    { EventID: 10, EventName: 'DragonKill',  EventTime: 780, KillerName: 'JgGap',     DragonType: 'Ocean' },
+    { EventID: 11, EventName: 'TurretKilled', EventTime: 900, KillerName: 'HardCarry', TurretKilled: 'Turret_T2_R_02_A' },
+  ];
+
+  const ornnItems = allPlayers[0]!.items;
+  const ornnSpent = ornnItems.reduce((s, i) => s + i.price, 0);
+  const ornnSeed = SEED_KDA[0]!;
+  const ornnEarned = 500 + ornnSeed.cs * 21 + ornnSeed.k * 300 + ornnSeed.a * 150 + SEED_TIME * 21 * 0.45;
 
   return {
     activePlayer: {
       summonerName: 'You',
       riotId: 'You#EUW',
-      level: 1,
-      currentGold: 500,
+      level: seedLevel,
+      currentGold: Math.max(0, Math.floor(ornnEarned - ornnSpent)),
       championStats: {
-        currentHealth: 640, maxHealth: 640, resourceValue: 400, resourceMax: 400,
-        resourceType: 'MANA', armor: 30, magicResist: 32, attackDamage: 69,
-        abilityPower: 0, attackSpeed: 0.625, moveSpeed: 335,
+        currentHealth: 1820, maxHealth: 2400, resourceValue: 280, resourceMax: 1040,
+        resourceType: 'MANA', armor: 124, magicResist: 86, attackDamage: 117,
+        abilityPower: 0, attackSpeed: 0.78, moveSpeed: 335,
       },
       abilities: {
-        Q: { id: 'OrnnQ', displayName: 'Volcanic Rupture',    abilityLevel: 0 },
-        W: { id: 'OrnnW', displayName: 'Bellows Breath',      abilityLevel: 0 },
-        E: { id: 'OrnnE', displayName: 'Searing Charge',      abilityLevel: 0 },
-        R: { id: 'OrnnR', displayName: 'Call of the Forge God', abilityLevel: 0 },
+        Q: { id: 'OrnnQ', displayName: 'Volcanic Rupture',    abilityLevel: 5 },
+        W: { id: 'OrnnW', displayName: 'Bellows Breath',      abilityLevel: 4 },
+        E: { id: 'OrnnE', displayName: 'Searing Charge',      abilityLevel: 4 },
+        R: { id: 'OrnnR', displayName: 'Call of the Forge God', abilityLevel: 2 },
       },
       fullRunes: null,
       teamRelativeColors: false,
     },
     allPlayers,
-    events: { Events: [{ EventID: 0, EventName: 'GameStart', EventTime: 0 }] },
+    events: { Events: seedEvents },
     gameData: {
       gameMode: 'CLASSIC',
-      gameTime: 0,
+      gameTime: SEED_TIME,
       mapName: 'Map11',
       mapNumber: 11,
-      mapTerrain: 'Default',
+      mapTerrain: 'Hextech',
     },
   };
 }

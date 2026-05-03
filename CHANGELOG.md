@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.5.12] — 2026-05-03
+
+### Changed
+- **Mode démo enrichi** : "Voir la démo" démarre maintenant à 15:20 de game avec un état pré-populé (KDA réalistes par rôle, items en slots, 2 drakes killed avec mapTerrain=Hextech pour déclencher la prédiction de soul, herald killed, 2 turrets perdues côté Chaos, summoner spells variés). Plus besoin d'attendre 20 minutes réelles pour voir toutes les features. Idéal pour les captures écran/GIF de présentation et l'onboarding nouveaux users.
+
 ## [v0.5.11] — 2026-04-22
 
 ### Added
